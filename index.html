@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Facebook URL Helper</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    .box {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Facebook URL Normalizador</h1>
+
+  <input
+    type="text"
+    id="urlInput"
+    placeholder="Pegá la URL de Facebook"
+  />
+
+  <button onclick="procesar()">Procesar</button>
+
+  <div id="result" class="box" style="display:none;"></div>
+
+  <script>
+    function limpiarUrl(url) {
+      try {
+        let u = new URL(url);
+
+        // eliminar parámetros basura típicos
+        u.searchParams.delete("mibextid");
+        u.searchParams.delete("fbclid");
+        u.searchParams.delete("ref");
+
+        return u.toString();
+      } catch {
+        return null;
+      }
+    }
+
+    function procesar() {
+      const input = document.getElementById("urlInput").value.trim();
+      const result = document.getElementById("result");
+
+      if (!input) {
+        alert("Pegá una URL");
+        return;
+      }
+
+      const cleanUrl = limpiarUrl(input);
+
+      if (!cleanUrl) {
+        alert("URL inválida");
+        return;
+      }
+
+      result.style.display = "block";
+
+      result.innerHTML = `
+        <strong>Pasos:</strong><br><br>
+
+        1. Abrí este link:<br>
+        <a href="${cleanUrl}" target="_blank">${cleanUrl}</a><br><br>
+
+        2. Copiá la URL final de la barra del navegador<br><br>
+
+        3. Usá esa URL en ARC XP<br><br>
+
+        <button onclick="navigator.clipboard.writeText('${cleanUrl}')">
+          Copiar URL
+        </button>
+      `;
+    }
+  </script>
+
+</body>
+</html>
